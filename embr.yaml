@@ -1,0 +1,16 @@
+platform: nodejs
+platformVersion: "20"
+autoDeploy: true
+
+run:
+  port: 3000
+  startCommand: node server.js
+
+database:
+  enabled: true
+  engine: postgres
+  framework: raw
+  schema: db/schema.sql
+
+healthCheck:
+  path: /health
