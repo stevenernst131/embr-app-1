@@ -14,3 +14,10 @@ database:
 
 healthCheck:
   path: /health
+
+dependencies:
+  - name: "api-key"
+    envVar: "EXTERNAL_API_KEY"
+    description: "Third-party API key"
+    required: true
+    isSecret: true
