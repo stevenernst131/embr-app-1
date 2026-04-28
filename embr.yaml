@@ -1,23 +1,18 @@
+version: 1
 platform: nodejs
-platformVersion: "20"
-autoDeploy: true
-
+platformVersion: "24"
 run:
   port: 3000
   startCommand: node server.js
 
-database:
-  enabled: true
-  engine: postgres
-  framework: raw
-  schema: db/schema.sql
-
-healthCheck:
-  path: /health
-
 dependencies:
-  - name: "api-key"
-    envVar: "EXTERNAL_API_KEY"
-    description: "Third-party API key"
+  app-database:
+    type: postgres
+    description: "Main application database"
     required: true
-    isSecret: true
+    provides:
+      - name: DATABASE_URL
+        secret: true
+        scope: runtime
+    postgres:
+      framework: raw
