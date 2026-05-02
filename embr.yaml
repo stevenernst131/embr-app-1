@@ -4,15 +4,26 @@ platformVersion: "24"
 run:
   port: 3000
   startCommand: node server.js
-
 dependencies:
-  app-database:
-    type: postgres
-    description: "Main application database"
+  analytics-service:
+    type: external
+    description: "Shared analytics service API - same across all environments"
     required: true
     provides:
-      - name: DATABASE_URL
+      - name: ANALYTICS_API_URL
+        secret: false
+        scope: runtime
+  payment-gateway:
+    type: external
+    description: "Payment gateway integration - unique credentials per environment"
+    required: true
+    provides:
+      - name: PAYMENT_API_KEY
         secret: true
         scope: runtime
-    postgres:
-      framework: raw
+      - name: PAYMENT_API_URL
+        secret: false
+        scope: runtime
+      - name: PAYMENT_MERCHANT_ID
+        secret: true
+        scope: runtime
