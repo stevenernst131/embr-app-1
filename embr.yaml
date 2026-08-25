@@ -1,29 +1,15 @@
-version: 1
-platform: nodejs
-platformVersion: "24"
-run:
-  port: 3000
-  startCommand: node server.js
-dependencies:
-  analytics-service:
-    type: external
-    description: "Shared analytics service API - same across all environments"
-    required: true
-    provides:
-      - name: ANALYTICS_API_URL
-        secret: false
-        scope: runtime
-  payment-gateway:
-    type: external
-    description: "Payment gateway integration - unique credentials per environment"
-    required: true
-    provides:
-      - name: PAYMENT_API_KEY
-        secret: true
-        scope: runtime
-      - name: PAYMENT_API_URL
-        secret: false
-        scope: runtime
-      - name: PAYMENT_MERCHANT_ID
-        secret: true
-        scope: runtime
+components:
+  - name: web
+    rootDirectory: web
+    role: static
+    path: /
+
+  - name: api
+    rootDirectory: services/api
+    role: web
+    platform: nodejs
+    path: /api
+    run:
+      port: 8080
+      start: npm start
+      healthCheckPath: /api/health

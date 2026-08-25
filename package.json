@@ -1,13 +1,16 @@
 {
-  "name": "embr-app-1",
+  "name": "embr-sample-static-spa-backend",
   "version": "1.0.0",
-  "description": "Feature-rich task management API built on Embr platform",
-  "main": "server.js",
+  "private": true,
+  "workspaces": [
+    "web",
+    "services/api"
+  ],
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
-  },
-  "dependencies": {
-    "pg": "^8.13.0"
+    "build": "npm run build --workspace web && npm run build --workspace api",
+    "dev:web": "npm run dev --workspace web",
+    "dev:api": "npm run dev --workspace api",
+    "start:api": "npm start --workspace api"
   }
 }
+
