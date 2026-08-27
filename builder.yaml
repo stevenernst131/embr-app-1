@@ -1,15 +1,10 @@
 components:
-  - name: web
-    rootDirectory: web
-    role: static
-    path: /
-
-  - name: api
-    rootDirectory: services/api
+  - name: app
     role: web
-    platform: nodejs
-    path: /api
+    platform: python
+    platformVersion: "3.14"
+    path: /
     run:
       port: 8080
-      start: npm start
-      healthCheckPath: /api/health
+      start: gunicorn --bind 0.0.0.0:8080 app:application
+      healthCheckPath: /health

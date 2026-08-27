@@ -1,14 +1,13 @@
-# Static SPA + backend
+# Python Builder App
 
-A Vite SPA is built into a static artifact and mounted at `/`. A separate
-Node.js API is built as a compute artifact and mounted at `/api`.
+A single WSGI application serves the site at `/` and exposes its health check
+at `/health`.
 
 ```powershell
-npm install
-npm run build
-npm run start:api
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python app.py
 ```
 
-Set `PORT` to override the API's default port of `8080`. During local
-development, run `npm run dev:web` and `npm run dev:api` in separate terminals.
-
+Set `PORT` to override the default port of `8080`.
