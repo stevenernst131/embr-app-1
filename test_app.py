@@ -58,6 +58,24 @@ class ApplicationTests(unittest.TestCase):
                 self.assertEqual(head_response["headers"], get_response["headers"])
                 self.assertEqual(head_response["body"], b"")
 
+    def test_unsupported_methods_on_known_routes(self):
+        for path in ("/", "/health"):
+            for method in ("POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE", "CONNECT"):
+                with self.subTest(path=path, method=method):
+                    response = self.request(path, method)
+                    self.assertEqual(response["status"], "405 Method Not Allowed")
+                    self.assertEqual(response["headers"]["Allow"], "GET, HEAD")
+                    self.assertEqual(response["body"], b"Method not allowed\n")
+                    self.assertEqual(
+                        int(response["headers"]["Content-Length"]),
+                        len(response["body"]),
+                    )
+
+    def test_unsupported_method_on_missing_route_still_returns_not_found(self):
+        response = self.request("/missing", "POST")
+        self.assertEqual(response["status"], "404 Not Found")
+        self.assertNotIn("Allow", response["headers"])
+
 
 if __name__ == "__main__":
     unittest.main()

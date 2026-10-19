@@ -3,12 +3,13 @@ import os
 from wsgiref.simple_server import make_server
 
 
-def _respond(environ, start_response, status, content_type, body):
+def _respond(environ, start_response, status, content_type, body, extra_headers=()):
     start_response(
         status,
         [
             ("Content-Type", content_type),
             ("Content-Length", str(len(body))),
+            *extra_headers,
         ],
     )
     return [] if environ.get("REQUEST_METHOD") == "HEAD" else [body]
@@ -16,6 +17,19 @@ def _respond(environ, start_response, status, content_type, body):
 
 def application(environ, start_response):
     path = environ.get("PATH_INFO", "/")
+
+    if path in ("/", "/health") and environ.get("REQUEST_METHOD", "GET") not in (
+        "GET",
+        "HEAD",
+    ):
+        return _respond(
+            environ,
+            start_response,
+            "405 Method Not Allowed",
+            "text/plain; charset=utf-8",
+            b"Method not allowed\n",
+            [("Allow", "GET, HEAD")],
+        )
 
     if path == "/health":
         body = json.dumps({"status": "healthy"}).encode()

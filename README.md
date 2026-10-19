@@ -5,6 +5,8 @@ at `/health`.
 
 Both endpoints support `GET` and `HEAD`. `HEAD` returns the same status and
 headers as `GET`, without a response body.
+Other methods on these endpoints return `405 Method Not Allowed` with
+`Allow: GET, HEAD`. Unknown routes return `404 Not Found`.
 
 ```powershell
 python -m venv .venv
