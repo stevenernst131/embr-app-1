@@ -3,6 +3,9 @@
 A single WSGI application serves the site at `/` and exposes its health check
 at `/health`.
 
+Both endpoints support `GET` and `HEAD`. `HEAD` returns the same status and
+headers as `GET`, without a response body.
+
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -11,3 +14,5 @@ python app.py
 ```
 
 Set `PORT` to override the default port of `8080`.
+
+Run the regression tests with `python -m unittest discover -v`.

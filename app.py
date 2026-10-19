@@ -3,40 +3,48 @@ import os
 from wsgiref.simple_server import make_server
 
 
+def _respond(environ, start_response, status, content_type, body):
+    start_response(
+        status,
+        [
+            ("Content-Type", content_type),
+            ("Content-Length", str(len(body))),
+        ],
+    )
+    return [] if environ.get("REQUEST_METHOD") == "HEAD" else [body]
+
+
 def application(environ, start_response):
     path = environ.get("PATH_INFO", "/")
 
     if path == "/health":
         body = json.dumps({"status": "healthy"}).encode()
-        start_response(
+        return _respond(
+            environ,
+            start_response,
             "200 OK",
-            [
-                ("Content-Type", "application/json"),
-                ("Content-Length", str(len(body))),
-            ],
+            "application/json",
+            body,
         )
-        return [body]
 
     if path == "/":
         body = b"Hello from the Embr Python Builder App!\n"
-        start_response(
+        return _respond(
+            environ,
+            start_response,
             "200 OK",
-            [
-                ("Content-Type", "text/plain; charset=utf-8"),
-                ("Content-Length", str(len(body))),
-            ],
+            "text/plain; charset=utf-8",
+            body,
         )
-        return [body]
 
     body = b"Not found\n"
-    start_response(
+    return _respond(
+        environ,
+        start_response,
         "404 Not Found",
-        [
-            ("Content-Type", "text/plain; charset=utf-8"),
-            ("Content-Length", str(len(body))),
-        ],
+        "text/plain; charset=utf-8",
+        body,
     )
-    return [body]
 
 
 if __name__ == "__main__":
