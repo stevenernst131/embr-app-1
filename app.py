@@ -39,6 +39,7 @@ def application(environ, start_response):
             "200 OK",
             "application/json",
             body,
+            [("Cache-Control", "no-store")],
         )
 
     if path == "/":

@@ -49,6 +49,12 @@ class ApplicationTests(unittest.TestCase):
             int(response["headers"]["Content-Length"]), len(response["body"])
         )
 
+    def test_health_responses_must_not_be_cached(self):
+        for method in ("GET", "HEAD"):
+            with self.subTest(method=method):
+                response = self.request("/health", method)
+                self.assertEqual(response["headers"]["Cache-Control"], "no-store")
+
     def test_head_has_get_headers_without_body(self):
         for path in ("/", "/health", "/missing"):
             with self.subTest(path=path):
