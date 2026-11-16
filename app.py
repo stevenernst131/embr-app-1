@@ -18,7 +18,8 @@ logger = logging.getLogger("blob_validation")
 ENDPOINT = os.environ.get("AZURE_STORAGE_ACCOUNT_URL", "")
 CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER", "")
 _client = None
-HUNT_REVISION = "hunt-c-resumed"
+HUNT_REVISION = "hunt-crash"
+raise RuntimeError("HUNT_DELIBERATE_STARTUP_CRASH_20261116")
 
 
 def log(event, **fields):
