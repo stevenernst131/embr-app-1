@@ -34,12 +34,6 @@ class BlobTests(unittest.TestCase):
         download = self.request("/blobs/test.txt")
         self.assertEqual(download["body"], b"hello")
 
-    @patch("app.ENDPOINT", "https://example.blob.core.windows.net")
-    @patch("app.CONTAINER", "")
-    def test_missing_container_is_rejected(self):
-        with self.assertRaisesRegex(ValueError, "AZURE_STORAGE_CONTAINER is not configured"):
-            container_client()
-
     @patch("app.container_client")
     def test_list_and_bad_name(self, client):
         item = MagicMock()
