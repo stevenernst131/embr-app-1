@@ -18,7 +18,7 @@ logger = logging.getLogger("blob_validation")
 ENDPOINT = os.environ.get("AZURE_STORAGE_ACCOUNT_URL", "")
 CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER", "")
 _client = None
-HUNT_REVISION = "hunt-b-manual"
+HUNT_REVISION = "hunt-c-resumed"
 
 
 def log(event, **fields):
