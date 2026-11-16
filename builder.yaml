@@ -6,5 +6,5 @@ components:
     path: /
     run:
       port: 8080
-      start: gunicorn --bind 0.0.0.0:8080 app:application
+      start: gunicorn --access-logfile - --workers 2 --threads 4 --bind 0.0.0.0:8080 app:application
       healthCheckPath: /health

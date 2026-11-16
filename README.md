@@ -5,3 +5,5 @@ The app exposes GET /health, GET /blobs, PUT /blobs/{name} (1–4096 bytes) and 
 This test app has no caller authentication: anyone who can reach it can read and overwrite blobs. Use a disposable account and container only. Structured JSON events on stdout show startup configuration, requests and Azure operation results; they do not include blob contents.
 
 Run `python -m unittest discover -v` for local tests. Deploy the committed `builder.yaml` with Builder CLI.
+
+CLI stress-test endpoints: `GET /hunt` returns the source revision, replica hostname, Requests dependency version and `HUNT_SETTING`. Optional `?wait=0..10` exercises concurrent requests. `GET /hunt/log?count=1..400&size=0..30000` emits bounded structured Unicode log lines. These are disposable validation endpoints, not production APIs.

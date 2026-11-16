@@ -4,6 +4,9 @@ import os
 import re
 import sys
 import time
+from urllib.parse import parse_qs
+
+import requests
 from wsgiref.simple_server import make_server
 
 from azure.core.exceptions import ResourceNotFoundError
@@ -15,6 +18,7 @@ logger = logging.getLogger("blob_validation")
 ENDPOINT = os.environ.get("AZURE_STORAGE_ACCOUNT_URL", "")
 CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER", "")
 _client = None
+HUNT_REVISION = "hunt-a"
 
 
 def log(event, **fields):
@@ -59,6 +63,17 @@ def application(environ, start_response):
         return reply(status, "application/json", json.dumps(payload).encode())
 
     try:
+        if path == "/hunt":
+            query = parse_qs(environ.get("QUERY_STRING", ""))
+            time.sleep(min(10, max(0, float(query.get("wait", ["0"])[0]))))
+            return json_reply("200 OK", {"revision": HUNT_REVISION, "hostname": os.environ.get("HOSTNAME"), "requests": requests.__version__, "unicode": "snowman \u2603 caf\u00e9", "variable": os.environ.get("HUNT_SETTING")})
+        if path == "/hunt/log":
+            query = parse_qs(environ.get("QUERY_STRING", ""))
+            count = min(400, max(1, int(query.get("count", ["1"])[0])))
+            size = min(30000, max(0, int(query.get("size", ["20"])[0])))
+            for i in range(count):
+                log("hunt_line", revision=HUNT_REVISION, line=i, text="snowman \u2603 caf\u00e9 " + "x" * size)
+            return json_reply("200 OK", {"logged": count, "size": size, "revision": HUNT_REVISION})
         if path in ("/", "/health"):
             if method not in ("GET", "HEAD"):
                 return reply("405 Method Not Allowed", "text/plain; charset=utf-8", b"Method not allowed\n", [("Allow", "GET, HEAD")])

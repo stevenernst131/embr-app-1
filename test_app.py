@@ -41,6 +41,18 @@ class ApplicationTests(unittest.TestCase):
             int(response["headers"]["Content-Length"]), len(response["body"])
         )
 
+    def test_hunt_reports_runtime_marker_and_dependency(self):
+        response = self.request("/hunt")
+        self.assertEqual(response["status"], "200 OK")
+        body = json.loads(response["body"])
+        self.assertTrue(body["revision"].startswith("hunt-"))
+        self.assertTrue(body["requests"])
+
+    def test_hunt_emits_requested_bounded_logs(self):
+        response = self.request("/hunt/log")
+        self.assertEqual(response["status"], "200 OK")
+        self.assertEqual(json.loads(response["body"])["logged"], 1)
+
     def test_missing_route(self):
         response = self.request("/missing")
         self.assertEqual(response["status"], "404 Not Found")
