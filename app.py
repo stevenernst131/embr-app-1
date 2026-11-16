@@ -18,12 +18,11 @@ logger = logging.getLogger("blob_validation")
 ENDPOINT = os.environ.get("AZURE_STORAGE_ACCOUNT_URL", "")
 CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER", "")
 _client = None
-HUNT_REVISION = "hunt-crash"
-raise RuntimeError("HUNT_DELIBERATE_STARTUP_CRASH_20261116")
+HUNT_REVISION = "hunt-recovery-a"
 
 
 def log(event, **fields):
-    logger.info(json.dumps({"event": event, **fields}, default=str))
+    logger.info(json.dumps({"event": event, **fields}, default=str, ensure_ascii=False))
 
 
 log("startup", endpoint=ENDPOINT, container=CONTAINER, credential="ManagedIdentityCredential", configured=bool(ENDPOINT and CONTAINER))
