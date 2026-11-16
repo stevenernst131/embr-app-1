@@ -1,22 +1,7 @@
-# Python Builder App
+# Python Builder Blob validation app
 
-A single WSGI application serves the site at `/` and exposes its health check
-at `/health`.
+The app exposes GET /health, GET /blobs, PUT /blobs/{name} (1–4096 bytes) and GET /blobs/{name}. Blob operations use the app's system-assigned managed identity and the `AZURE_STORAGE_BLOB_ENDPOINT` and `AZURE_STORAGE_CONTAINER` runtime variables. Grant Storage Blob Data Contributor to that identity on the storage account. No storage keys are used.
 
-Both endpoints support `GET` and `HEAD`. `HEAD` returns the same status and
-headers as `GET`, without a response body.
-Other methods on these endpoints return `405 Method Not Allowed` with
-`Allow: GET, HEAD`. Unknown routes return `404 Not Found`.
-Health responses include `Cache-Control: no-store` so clients and proxies do not
-reuse a stale healthy response.
+This test app has no caller authentication: anyone who can reach it can read and overwrite blobs. Use a disposable account and container only. Structured JSON events on stdout show startup configuration, requests and Azure operation results; they do not include blob contents.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python app.py
-```
-
-Set `PORT` to override the default port of `8080`.
-
-Run the regression tests with `python -m unittest discover -v`.
+Run `python -m unittest discover -v` for local tests. Deploy the committed `builder.yaml` with Builder CLI.
