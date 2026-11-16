@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from wsgiref.util import setup_testing_defaults
 
-from app import application
+from app import application, container_client
 
 
 class BlobTests(unittest.TestCase):
@@ -18,6 +18,12 @@ class BlobTests(unittest.TestCase):
         result["body"] = b"".join(application(env, start))
         return result
 
+    @patch("app.ENDPOINT", "https://example.blob.core.windows.net")
+    @patch("app.CONTAINER", "")
+    def test_missing_container_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "AZURE_STORAGE_CONTAINER is not configured"):
+            container_client()
+
     @patch("app.container_client")
     def test_upload_and_download(self, client):
         blob = client.return_value.get_blob_client.return_value
@@ -27,6 +33,12 @@ class BlobTests(unittest.TestCase):
         blob.upload_blob.assert_called_once_with(b"hello", overwrite=True)
         download = self.request("/blobs/test.txt")
         self.assertEqual(download["body"], b"hello")
+
+    @patch("app.ENDPOINT", "https://example.blob.core.windows.net")
+    @patch("app.CONTAINER", "")
+    def test_missing_container_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "AZURE_STORAGE_CONTAINER is not configured"):
+            container_client()
 
     @patch("app.container_client")
     def test_list_and_bad_name(self, client):
