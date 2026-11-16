@@ -12,7 +12,7 @@ from azure.storage.blob import BlobServiceClient
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout, format="%(message)s", force=True)
 logger = logging.getLogger("blob_validation")
-ENDPOINT = os.environ.get("AZURE_STORAGE_BLOB_ENDPOINT", "")
+ENDPOINT = os.environ.get("AZURE_STORAGE_ACCOUNT_URL", "")
 CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER", "validation")
 _client = None
 
@@ -27,7 +27,7 @@ log("startup", endpoint=ENDPOINT, container=CONTAINER, credential="ManagedIdenti
 def container_client():
     global _client
     if not ENDPOINT:
-        raise ValueError("AZURE_STORAGE_BLOB_ENDPOINT is not configured")
+        raise ValueError("AZURE_STORAGE_ACCOUNT_URL is not configured")
     if _client is None:
         _client = BlobServiceClient(account_url=ENDPOINT, credential=ManagedIdentityCredential()).get_container_client(CONTAINER)
     return _client
